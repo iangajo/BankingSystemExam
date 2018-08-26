@@ -1,0 +1,99 @@
+﻿@using Website.Enum
+@model Website.ViewModels.WalletViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>ACME Banking</h2>
+
+<h4>Portfolio</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Transfer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TransactionType" class="control-label"></label>
+                <select id="transactionType" asp-for="TransactionType" class="form-control" asp-items="Html.GetEnumSelectList<TransactionTypeSelectList>()"></select>
+                <span asp-validation-for="TransactionType" class="text-danger"></span>
+            </div>            
+            <div class="form-group" id="accountNumberFormGroup" >
+                <label class="control-label">Fund Transfer to Account Number:</label>
+                <input asp-for="AccountNumber" class="form-control" />
+                <span asp-validation-for="AccountNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Balance" class="control-label"></label>
+                <input asp-for="Balance" class="form-control" readonly="true" />
+                <span asp-validation-for="Balance" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Transfer" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            <label class="control-label">Transaction Date</label>
+        </th>
+        <th>
+            <label class="control-label">Description</label>
+        </th>
+        <th>
+            <label class="control-label">Reference</label>
+        </th>
+        <th>
+            <label class="control-label">Credit</label>
+        </th>
+        <th>
+            <label class="control-label">Debit</label>
+        </th>
+        <th>
+            <label class="control-label">Balance</label>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Transactions) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Credit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Debit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Balance)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
