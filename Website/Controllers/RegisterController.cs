@@ -49,9 +49,9 @@ namespace Website.Controllers
                 EmailAddress = loginNameViewModel.EmailAddress
             };
 
-            var response = _accountDataStore.Register(accountDetails);
+            var registeredAccount = _accountDataStore.Register(accountDetails);
 
-            if (string.IsNullOrEmpty(response.ErrorMessage)) return RedirectToAction("Index", "Login");
+            if (string.IsNullOrEmpty(registeredAccount.ErrorMessage)) return RedirectToAction("Index", "Login");
 
             ModelState.AddModelError("", "Oops. Something went wrong.");
             return View("Index");
