@@ -19,6 +19,8 @@ namespace Website.Models
 
         public string Address { get; set; }
 
+        public string EmailAddress { get; set; }
+
         public string RowVersion { get; set; }
     }
 }

@@ -184,12 +184,13 @@ namespace Website.DataStores.Implementation
                     using (var connection = new SqlConnection(_connectionString))
                     {
                         connection.Open();
-                        using (var command = new SqlCommand("INSERT INTO [AccountDetails] (AccountId, FirstName, LastName, Address) VALUES (@AccountId, @FirstName, @LastName, @Address); SELECT SCOPE_IDENTITY();", connection))
+                        using (var command = new SqlCommand("INSERT INTO [AccountDetails] (AccountId, FirstName, LastName, Address, EmailAddress) VALUES (@AccountId, @FirstName, @LastName, @Address, @EmailAddress); SELECT SCOPE_IDENTITY();", connection))
                         {
                             command.Parameters.AddWithValue("@AccountId", accountId);
                             command.Parameters.AddWithValue("@FirstName", newAccount.FirstName);
                             command.Parameters.AddWithValue("@LastName", newAccount.LastName);
                             command.Parameters.AddWithValue("@Address", newAccount.Address);
+                            command.Parameters.AddWithValue("@EmailAddress", newAccount.Address);
                             accountDetails = Convert.ToInt64(command.ExecuteScalar());
 
                         }

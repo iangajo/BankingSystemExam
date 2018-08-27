@@ -27,7 +27,9 @@ namespace Website.Controllers
         {
             if (!ModelState.IsValid) return View("Index");
 
-            var response = _accountDataStore.IsValidCredential(login.LoginName, login.Password);
+            var encryptedPassword =
+                System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(login.Password));
+            var response = _accountDataStore.IsValidCredential(login.LoginName, encryptedPassword);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
@@ -37,7 +39,7 @@ namespace Website.Controllers
 
             if (!response.Data)
             {
-                ModelState.AddModelError("", "Invalid LoginName or Password.");
+                ModelState.AddModelError("", "Invalid Login Name or Password.");
                 return View("Index");
             }
 

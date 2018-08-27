@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Website.ViewModels
 {
@@ -16,11 +12,18 @@ namespace Website.ViewModels
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Firstname is required.")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Lastname is required.")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         public string Address { get; set; }
+
+        [Required(ErrorMessage = "Email Address is required.")]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email Address")]
+        public string EmailAddress { get; set; }
     }
 }

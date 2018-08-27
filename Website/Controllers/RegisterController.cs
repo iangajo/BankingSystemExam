@@ -22,15 +22,6 @@ namespace Website.Controllers
         {
             if (!ModelState.IsValid) return View("Index");
 
-            var accountDetails = new AccountDetails()
-            {
-                LoginName = loginNameViewModel.LoginName,
-                Password = loginNameViewModel.Password,
-                FirstName = loginNameViewModel.FirstName,
-                LastName = loginNameViewModel.LastName,
-                Address = loginNameViewModel.Address
-            };
-
             var isLoginNameAlreadyExistsResponse = _accountDataStore.CheckLoginNameExist(loginNameViewModel.LoginName);
 
             if (isLoginNameAlreadyExistsResponse.Data)
@@ -44,6 +35,19 @@ namespace Website.Controllers
                 ModelState.AddModelError("", "Oops. Something went wrong.");
                 return View("Index", loginNameViewModel);
             }
+
+            var encryptedPassword =
+                System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(loginNameViewModel.Password));
+
+            var accountDetails = new AccountDetails()
+            {
+                LoginName = loginNameViewModel.LoginName,
+                Password = encryptedPassword,
+                FirstName = loginNameViewModel.FirstName,
+                LastName = loginNameViewModel.LastName,
+                Address = loginNameViewModel.Address,
+                EmailAddress = loginNameViewModel.EmailAddress
+            };
 
             var response = _accountDataStore.Register(accountDetails);
 
