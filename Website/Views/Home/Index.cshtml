@@ -20,7 +20,7 @@
             </div>            
             <div class="form-group" id="accountNumberFormGroup" >
                 <label class="control-label">Fund Transfer to Account Number:</label>
-                <input asp-for="AccountNumber" class="form-control" />
+                <input id="accountNumberInput" asp-for="AccountNumber" class="form-control" />
                 <span asp-validation-for="AccountNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,11 +34,37 @@
                 <span asp-validation-for="Balance" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Transfer" class="btn btn-default" />
+                <button type="button" id="transferBtn" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">
+                    Transfer
+                </button>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <span id="modalBodyText" ></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Confirm" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
+
+
+
 
 <table class="table">
     <thead>
