@@ -11,7 +11,7 @@ namespace Website.ViewModels
 
         public string Description { get; set; }
 
-        public long? Reference { get; set; }
+        public int? Reference { get; set; }
 
         public decimal? Credit { get; set; }
 

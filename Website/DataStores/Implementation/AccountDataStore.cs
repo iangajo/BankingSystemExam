@@ -76,7 +76,7 @@ namespace Website.DataStores.Implementation
             try
             {
 
-                const string sql = @"SELECT AccountId, AccountNumber, FirstName, LastName, Address 
+                const string sql = @"SELECT AccountId, AccountNumber, FirstName, LastName, Address, EmailAddress 
                                 FROM [AccountDetails] ad 
                                 INNER JOIN [Account] a ON a.Id = ad.AccountId WHERE a.LoginName = @LoginName";
                 using (var connection = new SqlConnection(_connectionString))
@@ -98,6 +98,7 @@ namespace Website.DataStores.Implementation
                                     response.Data.FirstName = reader["FirstName"].ToString();
                                     response.Data.LastName = reader["LastName"].ToString();
                                     response.Data.Address = reader["Address"].ToString();
+                                    response.Data.EmailAddress = reader["EmailAddress"].ToString();
                                 }
                             }
                             else
@@ -190,7 +191,7 @@ namespace Website.DataStores.Implementation
                             command.Parameters.AddWithValue("@FirstName", newAccount.FirstName);
                             command.Parameters.AddWithValue("@LastName", newAccount.LastName);
                             command.Parameters.AddWithValue("@Address", newAccount.Address);
-                            command.Parameters.AddWithValue("@EmailAddress", newAccount.Address);
+                            command.Parameters.AddWithValue("@EmailAddress", newAccount.EmailAddress);
                             accountDetails = Convert.ToInt64(command.ExecuteScalar());
 
                         }

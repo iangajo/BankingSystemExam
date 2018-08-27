@@ -78,7 +78,7 @@ namespace Website.DataStores.Implementation
                                         Debit = reader["Debit"] as decimal?,
                                         Balance = (decimal) reader["Balance"],
                                         TransactionType = (TransactionType) reader["TransactionType"],
-                                        TransactionReference = reader["TransactionReference"] as long?
+                                        TransactionReference = reader["TransactionReference"] as int?
                                     };
 
                                     response.Data.Add(transaction);

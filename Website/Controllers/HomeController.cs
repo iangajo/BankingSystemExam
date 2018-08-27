@@ -32,6 +32,8 @@ namespace Website.Controllers
                 return View("Index");
             }
 
+            ViewData["AccountNumber"] = accountDetails.Data.AccountNumber;
+
             var wallet = _accountDataStore.GetAccountBalance(accountDetails.Data.AccountNumber);
 
             if (!string.IsNullOrEmpty(wallet.ErrorMessage))

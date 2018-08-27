@@ -20,6 +20,6 @@ namespace Website.Models
 
         public decimal Balance { get; set; }
 
-        public long? TransactionReference { get; set; }
+        public int? TransactionReference { get; set; }
     }
 }
