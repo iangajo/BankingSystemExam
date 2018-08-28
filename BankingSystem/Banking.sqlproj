@@ -63,6 +63,6 @@
     <Build Include="Account.sql" />
     <Build Include="Transaction.sql" />
     <Build Include="Wallet.sql" />
-    <Build Include="TablesContraints.sql" />
+    <Build Include="TablesConstraints.sql" />
   </ItemGroup>
 </Project>

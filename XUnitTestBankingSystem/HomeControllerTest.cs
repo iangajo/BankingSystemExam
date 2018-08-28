@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -20,9 +21,8 @@ namespace XUnitTestBankingSystem
 
             var mockIAccountDataStore = new Mock<IAccountDataStore>();
             var mockITransactionDataStore = new Mock<ITransactionDataStore>();
-            var tempDataMock = new Mock<TempDataDictionary>();
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, "user001"),
             }));
@@ -94,9 +94,9 @@ namespace XUnitTestBankingSystem
 
             var mockIAccountDataStore = new Mock<IAccountDataStore>();
             var mockITransactionDataStore = new Mock<ITransactionDataStore>();
-            var tempDataMock = new Mock<TempDataDictionary>();
+       
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, "user001"),
             }));
@@ -111,14 +111,18 @@ namespace XUnitTestBankingSystem
             };
 
 
-            var controller = new HomeController(mockIAccountDataStore.Object, mockITransactionDataStore.Object);
+            var controller = new HomeController(mockIAccountDataStore.Object, mockITransactionDataStore.Object)
+            {
+                ControllerContext = context
+            };
 
-            controller.ControllerContext = context;
 
             var httpContext = new DefaultHttpContext();
 
-            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            controller.TempData["BalanceRowVersion"] = new byte[8];
+            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>())
+            {
+                ["BalanceRowVersion"] = new byte[8]
+            };
 
             mockIAccountDataStore.Setup(m => m.GetAccountDetails(It.IsAny<string>()))
                 .Returns(() => new Response<AccountDetails>()
@@ -168,9 +172,8 @@ namespace XUnitTestBankingSystem
 
             var mockIAccountDataStore = new Mock<IAccountDataStore>();
             var mockITransactionDataStore = new Mock<ITransactionDataStore>();
-            var tempDataMock = new Mock<TempDataDictionary>();
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, "user001"),
             }));
@@ -234,6 +237,92 @@ namespace XUnitTestBankingSystem
             var viewResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Home", viewResult.ControllerName);
 
+        }
+
+        [Fact]
+        public void IndexSuccess()
+        {
+
+            var mockIAccountDataStore = new Mock<IAccountDataStore>();
+            var mockITransactionDataStore = new Mock<ITransactionDataStore>();
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, "user001"),
+            }));
+
+            var context = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = user,
+                }
+
+            };
+
+
+            var controller = new HomeController(mockIAccountDataStore.Object, mockITransactionDataStore.Object)
+            {
+                ControllerContext = context
+            };
+
+
+            var httpContext = new DefaultHttpContext();
+
+            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>())
+            {
+                ["BalanceRowVersion"] = new byte[8]
+            };
+
+            mockIAccountDataStore.Setup(m => m.GetAccountDetails(It.IsAny<string>()))
+                .Returns(() => new Response<AccountDetails>()
+                {
+                    ErrorMessage = string.Empty,
+                    Data = new AccountDetails()
+                    {
+                        AccountNumber = 9000000000,
+                        AccountId = 1,
+                        LoginName = "user001",
+                    }
+                });
+
+            mockIAccountDataStore.Setup(m => m.GetAccountBalance(It.IsAny<long>())).Returns(() => new Response<Wallet>()
+            {
+                ErrorMessage = string.Empty,
+                Data = new Wallet()
+                {
+                    AccountNumber = 900000000,
+                    RowVersion = new byte[8],
+                    Balance = 100
+                }
+            });
+
+            mockITransactionDataStore.Setup(m => m.Withdraw(It.IsAny<long>(), It.IsAny<decimal>(), It.IsAny<byte[]>()))
+                .Returns(() => new Response<bool>()
+                {
+                    ErrorMessage = string.Empty,
+                    Data = true
+                });
+
+            mockITransactionDataStore.Setup(m => m.GetAccountTransactionsHistoryList(It.IsAny<long>()))
+                .Returns(() => new Response<List<WalletTransaction>>()
+                {
+                    ErrorMessage = string.Empty,
+                    Data = new List<WalletTransaction>()
+                    {
+                        new WalletTransaction(),
+                        new WalletTransaction()
+                    }
+                });
+
+            
+
+            var result = controller.Index();
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = viewResult.Model as WalletViewModel;
+
+            if (model != null) Assert.Equal(2, model.Transactions.Count);
         }
     }
 

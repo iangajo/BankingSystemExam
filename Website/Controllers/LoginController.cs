@@ -23,31 +23,31 @@ namespace Website.Controllers
         }
 
 
-        public IActionResult Login(LoginViewModel login)
+        public IActionResult Login(LoginViewModel loginViewModel)
         {
             if (!ModelState.IsValid) return View("Index");
 
             var encryptedPassword =
-                System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(login.Password));
-            var response = _accountDataStore.IsValidCredential(login.LoginName, encryptedPassword);
+                System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(loginViewModel.Password));
+            var response = _accountDataStore.IsValidCredential(loginViewModel.LoginName, encryptedPassword);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
                 ModelState.AddModelError("", response.ErrorMessage);
-                return View("Index");
+                return View("Index", loginViewModel);
             }
 
             if (!response.Data)
             {
                 ModelState.AddModelError("", "Invalid Login Name or Password.");
-                return View("Index");
+                return View("Index", loginViewModel);
             }
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, login.LoginName));
-            identity.AddClaim(new Claim(ClaimTypes.Name, login.LoginName));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, loginViewModel.LoginName));
+            identity.AddClaim(new Claim(ClaimTypes.Name, loginViewModel.LoginName));
             var principal = new ClaimsPrincipal(identity);
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties { IsPersistent = login.RememberMe });
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties { IsPersistent = loginViewModel.RememberMe });
 
             return RedirectToAction("Index", "Home");
         }
