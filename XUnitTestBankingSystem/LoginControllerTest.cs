@@ -17,7 +17,7 @@ namespace XUnitTestBankingSystem
     public class LoginControllerTest
     {
         [Fact]
-        public void LoginSuccess()
+        public void Login_Success()
         {
             const string loginName = "user001";
             const string password = "Password123.";
@@ -68,7 +68,7 @@ namespace XUnitTestBankingSystem
 
             var mockIAccountDataStore = new Mock<IAccountDataStore>();
             var controller = new LoginController(mockIAccountDataStore.Object);
-           
+
             mockIAccountDataStore.Setup(m => m.IsValidCredential(It.IsAny<string>(), It.IsAny<string>())).Returns(() => new Response<bool>() { Data = false, ErrorMessage = string.Empty });
 
             var result = controller.Login(new LoginViewModel()
@@ -78,15 +78,14 @@ namespace XUnitTestBankingSystem
             });
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = viewResult.Model as LoginViewModel;
 
-            if (model != null) Assert.Equal("user001", model.LoginName);
+            Assert.True(viewResult.ViewData.ModelState[""].Errors.Count == 1);
             Assert.Equal("Index", viewResult.ViewName);
 
         }
 
         [Fact]
-        public void LogoutSuccess()
+        public void Logout_Success()
         {
 
             var mockIAccountDataStore = new Mock<IAccountDataStore>();

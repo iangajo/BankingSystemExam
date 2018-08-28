@@ -100,6 +100,12 @@ namespace Website.Controllers
             if (rowVersion == null)
             {
                 var wallet = _accountDataStore.GetAccountBalance(accountDetails.Data.AccountNumber);
+                if (!string.IsNullOrEmpty(wallet.ErrorMessage))
+                {
+                    ModelState.AddModelError("", "Oops. something went wrong.");
+                    return View("Index", walletViewModel);
+                }
+
                 rowVersion = wallet.Data.RowVersion;
             }
 

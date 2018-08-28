@@ -11,7 +11,7 @@ namespace XUnitTestBankingSystem
     public class RegistrationControllerTest
     {
         [Fact]
-        public void RegisterSuccess()
+        public void Register_Success()
         {
             const string loginName = "user001";
             
@@ -35,6 +35,33 @@ namespace XUnitTestBankingSystem
 
             var viewResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Login", viewResult.ControllerName);
+
+        }
+
+        [Fact]
+        public void Register_LoginNameAlreadyExist()
+        {
+            const string loginName = "user001";
+
+            var mockIAccountDataStore = new Mock<IAccountDataStore>();
+
+            var controller = new RegisterController(mockIAccountDataStore.Object);
+
+            mockIAccountDataStore.Setup(m => m.CheckLoginNameExist(loginName)).Returns(() => new Response<bool>() { Data = true, ErrorMessage = string.Empty });
+
+            var result = controller.Create(new RegistrationViewModel()
+            {
+                LoginName = loginName,
+                Address = string.Empty,
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                Password = string.Empty,
+                EmailAddress = string.Empty
+            });
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.True(viewResult.ViewData.ModelState[""].Errors.Count == 1);
+            Assert.Equal("Index", viewResult.ViewName);
 
         }
     }
