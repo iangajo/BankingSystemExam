@@ -16,6 +16,19 @@ namespace XUnitTestBankingSystem
 {
     public class LoginControllerTest
     {
+
+        [Fact]
+        public void Login_Index()
+        {
+            var mockIAccountDataStore = new Mock<IAccountDataStore>();
+            var controller = new LoginController(mockIAccountDataStore.Object);
+            var result = controller.Index();
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Index", viewResult.ViewName);
+
+        }
+
         [Fact]
         public void Login_Success()
         {

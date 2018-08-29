@@ -11,6 +11,20 @@ namespace XUnitTestBankingSystem
     public class RegistrationControllerTest
     {
         [Fact]
+        public void Register_Index()
+        {
+            var mockIAccountDataStore = new Mock<IAccountDataStore>();
+            var controller = new RegisterController(mockIAccountDataStore.Object);
+
+            var result = controller.Index();
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Null(viewResult.ViewData["Success"]);
+            Assert.Equal("Index", viewResult.ViewName);
+
+        }
+
+        [Fact]
         public void Register_Success()
         {
             const string loginName = "user001";
@@ -34,6 +48,7 @@ namespace XUnitTestBankingSystem
             });
 
             var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Successfully created new account.", viewResult.ViewData["Success"]);
             Assert.Equal("Index", viewResult.ViewName);
 
         }

@@ -19,7 +19,7 @@ namespace Website.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("Index");
         }
 
 
@@ -33,7 +33,7 @@ namespace Website.Controllers
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
-                ModelState.AddModelError("", response.ErrorMessage);
+                ModelState.AddModelError("", "Oops. something went wrong.");
                 return View("Index", loginViewModel);
             }
 
