@@ -73,6 +73,7 @@ namespace Website.Controllers
             return View(viewModel);
         }
 
+        [ValidateAntiForgeryToken]
         public IActionResult Transfer(WalletViewModel walletViewModel)
         {
             var response = new Response<bool>();
@@ -97,15 +98,16 @@ namespace Website.Controllers
 
             var rowVersion = TempData["BalanceRowVersion"] as byte[];
 
+            var wallet = _accountDataStore.GetAccountBalance(accountDetails.Data.AccountNumber);
+
+            if (!string.IsNullOrEmpty(wallet.ErrorMessage))
+            {
+                ModelState.AddModelError("", "Oops. something went wrong.");
+                return View("Index", walletViewModel);
+            }
+
             if (rowVersion == null)
             {
-                var wallet = _accountDataStore.GetAccountBalance(accountDetails.Data.AccountNumber);
-                if (!string.IsNullOrEmpty(wallet.ErrorMessage))
-                {
-                    ModelState.AddModelError("", "Oops. something went wrong.");
-                    return View("Index", walletViewModel);
-                }
-
                 rowVersion = wallet.Data.RowVersion;
             }
 
@@ -115,6 +117,13 @@ namespace Website.Controllers
                     response = _transactionDataStore.Deposit(accountNumber, walletViewModel.Amount, rowVersion);
                     break;
                 case TransactionType.Withdraw:
+
+                    if (wallet.Data.Balance < walletViewModel.Amount)
+                    {
+                        ModelState.AddModelError("", "Insufficient Funds");
+                        return View("Index", walletViewModel);
+                    }
+
                     response = _transactionDataStore.Withdraw(accountNumber, walletViewModel.Amount, rowVersion);
                     break;
                 case TransactionType.FundTransfer:
@@ -122,6 +131,12 @@ namespace Website.Controllers
                     if (accountNumber.Equals(accountNumberReceiver))
                     {
                         ModelState.AddModelError("", "You can't transfer using your own account.");
+                        return View("Index", walletViewModel);
+                    }
+
+                    if (wallet.Data.Balance < walletViewModel.Amount)
+                    {
+                        ModelState.AddModelError("", "Insufficient Funds");
                         return View("Index", walletViewModel);
                     }
 

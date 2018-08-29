@@ -5,6 +5,7 @@ namespace Website.ViewModels
     public class RegistrationViewModel
     {
         [Required(ErrorMessage = "Login Name is required.")]
+        [Display(Name = "Login Name")]
         public string LoginName { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]

@@ -33,8 +33,8 @@ namespace XUnitTestBankingSystem
                 EmailAddress = string.Empty
             });
 
-            var viewResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Login", viewResult.ControllerName);
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Index", viewResult.ViewName);
 
         }
 

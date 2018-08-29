@@ -15,11 +15,13 @@ namespace Website.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Success"] = null;
             return View("Index");
         }
 
         public IActionResult Create(RegistrationViewModel loginNameViewModel)
         {
+            ViewData["Success"] = null;
             if (!ModelState.IsValid) return View("Index");
 
             var isLoginNameAlreadyExistsResponse = _accountDataStore.CheckLoginNameExist(loginNameViewModel.LoginName);
@@ -51,10 +53,14 @@ namespace Website.Controllers
 
             var registeredAccount = _accountDataStore.Register(accountDetails);
 
-            if (string.IsNullOrEmpty(registeredAccount.ErrorMessage)) return RedirectToAction("Index", "Login");
+            if (string.IsNullOrEmpty(registeredAccount.ErrorMessage))
+            {
+                ViewData["Success"] = "Successfully created new account.";
+                return View("Index");
+            }
 
             ModelState.AddModelError("", "Oops. Something went wrong.");
-            return View("Index");
+            return View("Index", loginNameViewModel);
 
         }
         
