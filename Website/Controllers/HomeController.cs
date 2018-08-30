@@ -159,6 +159,10 @@ namespace Website.Controllers
 
         }
 
-
+        [AllowAnonymous]
+        public IActionResult Error()
+        {
+           return View("Error");
+        }
     }
 }
